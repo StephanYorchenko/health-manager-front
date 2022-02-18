@@ -14,8 +14,6 @@ export const StatsCard = ({label, fieldName} : TStatsCard) => {
       {
         label: 'Dataset 1',
         data: [36, 36.6, 36.7, 37.5, 37.8, 37.2, 37.5],
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
       }
     ],
   };
