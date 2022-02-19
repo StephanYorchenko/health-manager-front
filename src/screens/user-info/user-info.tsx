@@ -1,6 +1,6 @@
 import {Group, Panel, PanelHeader, View} from "@vkontakte/vkui";
 import {StatsCard} from "../../components";
-import {ParamsLayout, UserAvatar} from "./components";
+import {IvlState, ParamsLayout, UserAvatar} from "./components";
 import {useEffect, useState} from "react";
 import {statsRepository} from "../../core";
 import styled from "styled-components";
@@ -9,7 +9,8 @@ import styled from "styled-components";
 const Stats = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: space-between;
+  margin-bottom: 15px;
 `;
 
 export const UserInfo = () => {
@@ -37,6 +38,11 @@ export const UserInfo = () => {
       .then(setHmotnostData);
   }, []);
 
+  const [ivl, setIVL] = useState(true);
+  useEffect(() => {
+    statsRepository.getIVLState(1).then(setIVL);
+  }, [])
+
   return (
     <View activePanel="card">
       <Panel id="card">
@@ -48,6 +54,7 @@ export const UserInfo = () => {
             <StatsCard label={"Температура"} data={temperatureData}/>
             <StatsCard label={"Вес"} data={hmotnostData}/>
           </Stats>
+          <IvlState state={ivl}/>
         </Group>
       </Panel>
     </View>

@@ -17,6 +17,11 @@ class StatsRepository extends BaseRepositoryRest{
     const url = `/api/patient/${patientId}/hmotnost`
     return this.get<{}, PatientHmotnostDTO[]>(url);
   }
+
+  getIVLState(patientId: number): Promise<boolean>{
+    const url = `/api/patient/${patientId}/ivl`
+    return this.get<{}, boolean>(url).catch(() => false);
+  }
 }
 
 export const statsRepository = new StatsRepository();
