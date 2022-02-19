@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,6 +10,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import styled from "styled-components";
 
 ChartJS.register(
   CategoryScale,
@@ -23,10 +24,14 @@ ChartJS.register(
 
 export const options = {
   responsive: true,
+  borderWidth: 5,
   scales: {
     y: { // defining min and max so hiding the dataset does not change scale range
       min: 34,
       max: 43
+    },
+    xAxes: {
+      display: false
     }
   },
   plugins: {
@@ -54,6 +59,17 @@ type ChartProps = {
   data: ChartData
 }
 
+const ParentDiv = styled.div`
+  max-width: 600px;
+`;
+
 export const Chart = ({data} : ChartProps) => {
-  return <Line options={options} data={data}/>;
+  const chartDataset = useMemo(() => {
+    return {...data, backgroundColor: "green"}
+  }, [data]);
+  return (
+    <ParentDiv>
+      <Line options={options} data={chartDataset}/>
+    </ParentDiv>
+  );
 }
