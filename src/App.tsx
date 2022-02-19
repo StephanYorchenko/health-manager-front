@@ -1,18 +1,40 @@
-import React from "react";
-import {Routes, Route, BrowserRouter} from "react-router-dom";
-import {useAdaptivity, AppRoot, SplitLayout, SplitCol, ViewWidth, PanelHeader, } from "@vkontakte/vkui";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {Routes, Route, BrowserRouter, useNavigate} from "react-router-dom";
+import {
+  useAdaptivity,
+  AppRoot,
+  SplitLayout,
+  SplitCol,
+  ViewWidth,
+  PanelHeader,
+  View,
+  Panel,
+  PanelHeaderBack,
+} from "@vkontakte/vkui";
 import "@vkontakte/vkui/dist/vkui.css";
 import {UserInfo} from "./screens/user-info";
 import {Login} from "./screens/login";
 import {userRepository} from "./core";
 import {RoomsList} from "./screens/rooms-list/rooms-list";
+import {RoomInfo} from "./screens/room-info";
 
 function AuthorizedRoot(props: {logoutCallback?: VoidFunction}){
+  const navigate = useNavigate();
   return (
-      <Routes>
-        <Route path="/user/:id" element={<UserInfo/>}/>
-        <Route path="*" element={<RoomsList/>}/>
-      </Routes>
+    <View activePanel="card">
+      <Panel id="card">
+        <PanelHeader
+          left={<PanelHeaderBack onClick={() => navigate(-1)}/>}
+        >
+          HealthManager
+        </PanelHeader>
+        <Routes>
+          <Route path="/patient/:id" element={<UserInfo/>}/>
+          <Route path="/room/:id" element={<RoomInfo/>}/>
+          <Route path="*" element={<RoomsList/>}/>
+        </Routes>
+      </Panel>
+    </View>
   );
 }
 
@@ -23,40 +45,34 @@ function UnauthorizedRoot(props: {callback: VoidFunction}) {
     </Routes>
   );
 }
+const Browser = (props: { children: JSX.Element; }) => {
+  return (
+    <BrowserRouter key={"random-value"}>{props.children}</BrowserRouter>
+  );
+}
 
-class RootScreen extends React.Component<any, {isAuth: boolean | null}>{
-
-  constructor(props: {}) {
-    super(props);
-    this.state = {
-      isAuth: null
-    }
-  }
-  componentDidMount() {
-    userRepository.check().then(v => {
-      console.log(v);
-      this.setState({isAuth: v})
-    })
-  }
-
-  updateLogin =  async () => {
-    await userRepository.check().then(
+const RootScreen = () => {
+  const navigate = useNavigate();
+  const [isAuth, setAuth] = useState(false);
+  useEffect(() => {
+    userRepository.check().then(setAuth);
+  })
+  const updateLogin =  useCallback( () => {
+     userRepository.check().then(
       result => {
-        this.setState({isAuth: result}, () => {
-          if (!result) window.location.reload()
-        })
+        setAuth(result);
+        if (!result) navigate('/');
       }
     )
-  }
-
-  render(){
-    const route = this.state.isAuth
-        ? <AuthorizedRoot logoutCallback={this.updateLogin.bind(this)}/>
-        : <UnauthorizedRoot callback={this.updateLogin.bind(this)}/>
-    return (
-      <BrowserRouter key={"random-value"}>{route}</BrowserRouter>
-    )
-  }
+  }, []);
+  const route = useMemo(() => {
+    return isAuth
+      ? <AuthorizedRoot logoutCallback={updateLogin}/>
+      : <UnauthorizedRoot callback={updateLogin}/>
+  }, [isAuth])
+  return (
+    <>{route}</>
+  );
 }
 
 export const App = () => {
@@ -66,7 +82,9 @@ export const App = () => {
     <AppRoot>
       <SplitLayout header={<PanelHeader separator={false} />}>
         <SplitCol spaced={viewWidth && viewWidth > ViewWidth.MOBILE}>
-          <RootScreen/>
+          <Browser>
+            <RootScreen/>
+          </Browser>
         </SplitCol>
       </SplitLayout>
     </AppRoot>

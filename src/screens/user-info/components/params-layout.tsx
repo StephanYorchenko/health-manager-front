@@ -5,12 +5,18 @@ const CenteredDiv = styled.div`
   text-align: center;
   height: 50px;
   min-width: 200px;
+  @media (max-width: 669px){
+    min-width: 100px;
+  }
   margin-top: 20px;
   margin-bottom: 20px;
 `;
 
 const CenterFlex = styled.div`
   display: flex;
+  @media (max-width: 300px){
+    flex-wrap: wrap;
+  }
   padding-bottom: 5px;
   padding-top: 5px;
   justify-content: space-around;

@@ -7,9 +7,10 @@ import {
   SimpleCell
 } from "@vkontakte/vkui";
 import {Empty} from "../../components";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {userRepository} from "../../core";
 import styled from "styled-components";
+import {useNavigate} from "react-router-dom";
 
 type TPatientCard = {
   roomIdentifier: number,
@@ -32,6 +33,7 @@ const LapaHoverDiv = styled.div`
 `;
 
 export const PatientKarta = ({roomIdentifier, name}: TPatientCard) => {
+  const navigate = useNavigate();
   const [patients, setPatients] = useState([] as TUser[]);
   useEffect(() => {
     userRepository.getAllByRoomId(roomIdentifier).then(setPatients);
@@ -46,9 +48,12 @@ export const PatientKarta = ({roomIdentifier, name}: TPatientCard) => {
       </InitialsAvatar>
     );
   };
+  const redirect = useCallback(() => {
+    navigate(`/room/${roomIdentifier}`)
+  }, [roomIdentifier]);
   return (
     <>
-      <Card mode="tint">
+      <Card mode="tint" onClick={redirect}>
         <LapaHoverDiv>
           <Header>
             {name}

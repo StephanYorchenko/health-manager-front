@@ -1,4 +1,4 @@
-import {Group, Panel, PanelHeader, View} from "@vkontakte/vkui";
+import {Group} from "@vkontakte/vkui";
 import {StatsCard} from "../../components";
 import {IvlState, ParamsLayout, UserAvatar} from "./components";
 import {useEffect, useState} from "react";
@@ -44,19 +44,16 @@ export const UserInfo = () => {
   }, [])
 
   return (
-    <View activePanel="card">
-      <Panel id="card">
-        <PanelHeader>HealthManager</PanelHeader>
-        <UserAvatar username={user}/>
-        <Group>
-          <ParamsLayout/>
-          <Stats>
-            <StatsCard label={"Температура"} data={temperatureData}/>
-            <StatsCard label={"Вес"} data={hmotnostData}/>
-          </Stats>
-          <IvlState state={ivl}/>
-        </Group>
-      </Panel>
-    </View>
+    <>
+      <UserAvatar username={user}/>
+      <Group>
+        <ParamsLayout/>
+        <Stats>
+          <StatsCard label={"Температура"} data={temperatureData}/>
+          <StatsCard label={"Вес"} data={hmotnostData}/>
+        </Stats>
+        <IvlState state={ivl}/>
+      </Group>
+    </>
   );
 }
