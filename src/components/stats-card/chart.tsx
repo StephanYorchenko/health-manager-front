@@ -26,10 +26,6 @@ export const options = {
   responsive: true,
   borderWidth: 5,
   scales: {
-    y: { // defining min and max so hiding the dataset does not change scale range
-      min: 34,
-      max: 43
-    },
     xAxes: {
       display: false
     }
@@ -67,9 +63,15 @@ export const Chart = ({data} : ChartProps) => {
   const chartDataset = useMemo(() => {
     return {...data, backgroundColor: "green"}
   }, [data]);
+
+  const yFixedOptions = useMemo(() => {
+    const minY = Math.min(...data.datasets.map(x => Math.min(...x.data))) - 2;
+    const maxY = Math.max(...data.datasets.map(x => Math.max(...x.data))) + 2;
+    return {...options, scales: {...options.scales, y: {min: minY, max: maxY}}};
+  }, [data]);
   return (
     <ParentDiv>
-      <Line options={options} data={chartDataset}/>
+      <Line options={yFixedOptions} data={chartDataset}/>
     </ParentDiv>
   );
 }

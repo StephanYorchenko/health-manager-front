@@ -28,6 +28,15 @@ export const UserInfo = () => {
       .then(setTData);
   }, []);
 
+  const [hmotnostData, setHmotnostData] = useState<{time: string, value: number}[]>([]);
+  useEffect( () => {
+    statsRepository.getPatientHmotnost(1)
+      .then(e => {
+        return e.map(v => ({time: v.saved_at, value: parseFloat(v.value)}));
+      })
+      .then(setHmotnostData);
+  }, []);
+
   return (
     <View activePanel="card">
       <Panel id="card">
@@ -37,7 +46,7 @@ export const UserInfo = () => {
           <ParamsLayout/>
           <Stats>
             <StatsCard label={"Температура"} data={temperatureData}/>
-            <StatsCard label={"Вес"} data={temperatureData}/>
+            <StatsCard label={"Вес"} data={hmotnostData}/>
           </Stats>
         </Group>
       </Panel>

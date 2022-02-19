@@ -1,4 +1,4 @@
-import {calcInitialsAvatarColor, Group, InitialsAvatar, RichCell, Title, Text, Div, InfoRow} from "@vkontakte/vkui";
+import {calcInitialsAvatarColor, Group, InitialsAvatar, RichCell, Text, Div} from "@vkontakte/vkui";
 
 type TUserAvatar = {
   username: {
