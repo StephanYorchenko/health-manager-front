@@ -19,18 +19,23 @@ type TStatsCard = {
   data: {value: number, time: string}[];
 }
 
+function formatTime(timeString: string) {
+  const date = new Date(timeString);
+  return date.toLocaleString();
+}
+
 export const StatsCard = ({label, data} : TStatsCard) => {
   const chartData = useMemo(() => {
     return {
-      labels: data.map(i => i.time),
+      labels: data.map(i => formatTime(i.time)),
       datasets: [
         {
-          label: 'Dataset 1',
+          label: label,
           data: data.map(i => i.value),
         }
       ],
     }
-  }, [data]);
+  }, [data, label]);
   return (
     <Card>
       <CenteredDiv>

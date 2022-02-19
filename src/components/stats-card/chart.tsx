@@ -38,6 +38,9 @@ export const options = {
       display: false,
       text: 'Chart.js Line Chart',
     },
+    tooltip: {
+      callbacks: {}
+    }
   },
 };
 
@@ -61,13 +64,21 @@ const ParentDiv = styled.div`
 
 export const Chart = ({data} : ChartProps) => {
   const chartDataset = useMemo(() => {
-    return {...data, backgroundColor: "green"}
+    return {...data}
   }, [data]);
 
   const yFixedOptions = useMemo(() => {
     const minY = Math.min(...data.datasets.map(x => Math.min(...x.data))) - 2;
     const maxY = Math.max(...data.datasets.map(x => Math.max(...x.data))) + 2;
-    return {...options, scales: {...options.scales, y: {min: minY, max: maxY}}};
+    return {
+      ...options,
+      scales: {...options.scales, y: {min: minY, max: maxY}},
+      plugins: {...options.plugins, tooltip: {callbacks: {
+        label: (context: any) => {
+          return context.parsed.y
+        },
+      }}}
+    };
   }, [data]);
   return (
     <ParentDiv>

@@ -1,1 +1,1 @@
-export {RoomsRepository, UsersRepository, statsRepository} from "./repositories";
+export {roomsRepository, userRepository, statsRepository} from "./repositories";
