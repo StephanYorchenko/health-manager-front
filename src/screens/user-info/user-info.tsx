@@ -1,9 +1,10 @@
-import {Group} from "@vkontakte/vkui";
+import {Group, Spinner} from "@vkontakte/vkui";
 import {StatsCard} from "../../components";
 import {IvlState, ParamsLayout, UserAvatar} from "./components";
-import {useEffect, useState} from "react";
-import {statsRepository} from "../../core";
+import {useEffect, useMemo, useState} from "react";
+import {statsRepository, userRepository} from "../../core";
 import styled from "styled-components";
+import {useParams} from "react-router-dom";
 
 
 const Stats = styled.div`
@@ -13,39 +14,56 @@ const Stats = styled.div`
   margin-bottom: 15px;
 `;
 
+type TUser = {
+  id: number,
+  first_name:string;
+  second_name: string;
+  last_name: string;
+}
+
 export const UserInfo = () => {
-  const user = {
-    lastName: "Губанов",
-    firstName: "Данил",
-    secondName: "Денисович"
-  };
+  const params = useParams<"id">();
+  const [user, setUser] = useState<TUser | null>(null);
+
+  useEffect(() => {
+    userRepository.getById(parseInt(params.id || "")).then(setUser);
+  }, [params, setUser]);
 
   const [temperatureData, setTData] = useState<{time: string, value: number}[]>([]);
   useEffect( () => {
-    statsRepository.getPatientTemp(1)
-      .then(e => {
-        return e.map(v => ({time: v.saved_at, value: parseFloat(v.value)}));
-      })
-      .then(setTData);
-  }, []);
+    if (user !== null)
+      statsRepository.getPatientTemp(user.id)
+        .then(e => {
+          return e.map(v => ({time: v.saved_at, value: parseFloat(v.value)}));
+        })
+        .then(setTData);
+  }, [user]);
 
   const [hmotnostData, setHmotnostData] = useState<{time: string, value: number}[]>([]);
   useEffect( () => {
-    statsRepository.getPatientHmotnost(1)
-      .then(e => {
-        return e.map(v => ({time: v.saved_at, value: parseFloat(v.value)}));
-      })
-      .then(setHmotnostData);
-  }, []);
+    if (user !== null)
+      statsRepository.getPatientHmotnost(user.id)
+        .then(e => {
+          return e.map(v => ({time: v.saved_at, value: parseFloat(v.value)}));
+        })
+        .then(setHmotnostData);
+  }, [user]);
 
   const [ivl, setIVL] = useState(true);
   useEffect(() => {
-    statsRepository.getIVLState(1).then(setIVL);
-  }, [])
+    if (user !== null)
+      statsRepository.getIVLState(user.id).then(setIVL);
+  }, [user])
+
+  const avatar = useMemo(() => {
+    if (user !== null)
+      return <UserAvatar username={user} id={user.id}/>
+    return <Spinner size="large"/>
+  }, [user]);
 
   return (
     <>
-      <UserAvatar username={user}/>
+      {avatar}
       <Group>
         <ParamsLayout/>
         <Stats>

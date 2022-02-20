@@ -1,22 +1,17 @@
-import {calcInitialsAvatarColor, Group, InitialsAvatar, RichCell, Text, Div} from "@vkontakte/vkui";
+import {Group, RichCell, Text, Div, Avatar} from "@vkontakte/vkui";
+import {useMemo} from "react";
 
 type TUserAvatar = {
+  id: number
   username: {
-    firstName: string;
-    secondName?: string;
-    lastName: string;
+    first_name: string;
+    second_name?: string;
+    last_name: string;
   }
 }
 
-export const UserAvatar = ({username}: TUserAvatar) => {
-  const avatar = (
-    <InitialsAvatar
-      size={80}
-      gradientColor={calcInitialsAvatarColor(1234)}
-    >
-      {username.lastName[0] + username.firstName[0]}
-    </InitialsAvatar>
-  )
+export const UserAvatar = ({username, id}: TUserAvatar) => {
+  const avatar = useMemo(() => (<Avatar size={80} src={`https://i.pravatar.cc/300?img=${id}`} />), [id]);
   return (
     <Group>
       <RichCell
@@ -24,9 +19,9 @@ export const UserAvatar = ({username}: TUserAvatar) => {
         before={avatar}
       >
         <Div>
-          <Text weight="regular" size={24}>{username.lastName}</Text>
-          <Text weight="regular" size={24}>{username.firstName}</Text>
-          <Text weight="regular" size={24}>{username.secondName}</Text>
+          <Text weight="regular" size={24}>{username.first_name}</Text>
+          <Text weight="regular" size={24}>{username.second_name}</Text>
+          <Text weight="regular" size={24}>{username.last_name}</Text>
         </Div>
       </RichCell>
     </Group>
