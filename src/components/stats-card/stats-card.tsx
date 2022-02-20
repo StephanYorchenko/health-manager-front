@@ -14,6 +14,10 @@ const CenteredDiv = styled.div`
   }
 `;
 
+const MarginBot = styled(Card)`
+  margin-bottom: 10px;
+`;
+
 type TStatsCard = {
   label: string;
   data: {value: number, time: string}[];
@@ -37,7 +41,7 @@ export const StatsCard = ({label, data} : TStatsCard) => {
     }
   }, [data, label]);
   return (
-    <Card>
+    <MarginBot>
       <CenteredDiv>
         <Header
           mode="primary"
@@ -51,6 +55,6 @@ export const StatsCard = ({label, data} : TStatsCard) => {
         </Header>
         <Chart data={chartData}/>
       </CenteredDiv>
-    </Card>
+    </MarginBot>
   );
 }

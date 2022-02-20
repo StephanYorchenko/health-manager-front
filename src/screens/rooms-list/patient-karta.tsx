@@ -1,4 +1,5 @@
 import {
+  Avatar,
   calcInitialsAvatarColor,
   Card,
   Header,
@@ -40,12 +41,7 @@ export const PatientKarta = ({roomIdentifier, name}: TPatientCard) => {
   }, [])
   const avatar = (userName: string, userIdentifier: number) => {
     return (
-      <InitialsAvatar
-        size={40}
-        gradientColor={calcInitialsAvatarColor(userIdentifier)}
-      >
-        {userName.split(" ").map(e => e[0]).join("")}
-      </InitialsAvatar>
+      <Avatar src={`https://i.pravatar.cc/300?img=${userIdentifier}`} />
     );
   };
   const redirect = useCallback(() => {
